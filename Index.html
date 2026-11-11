@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pokerzin</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#09060f;--card:#14101f;--card2:#1c1630;--line:#2c2247;--text:#f3effa;--mut:#9a8fb5;--pu:#a855f7;--pu2:#c4a1ff;--gold:#f5c542;--ok:#4ade80;--bad:#fb7185;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:radial-gradient(120% 60% at 50% -10%,#2a1050 0%,var(--bg) 55%) fixed;color:var(--text);font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:16px 16px 40px;max-width:680px;margin-inline:auto}
+h1{margin:0;font-size:26px;font-weight:800}
+h1 span{background:linear-gradient(90deg,var(--pu),var(--pu2));-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:1.2px;color:var(--mut);margin:22px 0 10px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+input,button{font:inherit;color:var(--text)}
+input[type=month],input[type=date],input[type=password],input[type=number]{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;outline:none}
+input:focus{border-color:var(--pu)}
+button{background:linear-gradient(135deg,var(--pu),#7c3aed);color:#fff;border:0;border-radius:12px;padding:12px 18px;font-weight:700;cursor:pointer}
+button.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px;margin:16px 0 4px}
+.tabs button{background:transparent;color:var(--mut);padding:10px 2px;font-size:14px;border-radius:10px}
+.tabs button.on{background:var(--card2);color:#fff;box-shadow:inset 0 0 0 1px var(--pu)}
+.tab{display:none}.tab.on{display:block}
+.leader{background:linear-gradient(135deg,#2b1459,#14101f);border:1px solid var(--pu);border-radius:18px;padding:18px;text-align:center;box-shadow:0 0 30px rgba(168,85,247,.25)}
+.leader .crown{font-size:36px}.leader .name{font-size:26px;font-weight:800}
+.leader .pts{color:var(--pu2)}
+.row{display:grid;grid-template-columns:36px 1fr auto;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin-bottom:8px;position:relative;overflow:hidden}
+.row .bar{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,rgba(168,85,247,.28),rgba(168,85,247,.04));z-index:0}
+.row>*{position:relative}
+.pos{font-weight:800;text-align:center;color:var(--mut)}
+.p1 .pos{color:var(--gold)}.p2 .pos{color:#cbd5e1}.p3 .pos{color:#d08a55}
+.sub{color:var(--mut);font-size:13px}.tot{font-weight:800;font-size:19px}
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:9px 11px;text-align:center;white-space:nowrap;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--card)}
+th{color:var(--mut);font-weight:600}td.z{color:#5d5178}
+tfoot td{font-size:12px;border:0}
+.good{color:var(--ok)}.warn{color:var(--bad)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.stat b{display:block;font-size:18px;margin-top:2px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-top:8px}
+.chips{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.chip{display:flex;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:11px 12px;cursor:pointer;user-select:none;color:var(--mut)}
+.chip i{width:20px;height:20px;border-radius:6px;border:2px solid var(--line);display:grid;place-items:center;font-style:normal;font-size:13px}
+.chip.on{border-color:var(--pu);color:#fff;background:rgba(168,85,247,.16)}
+.chip.on i{background:var(--pu);border-color:var(--pu)}
+.frow{display:grid;grid-template-columns:1fr 110px;gap:10px;align-items:center;margin:8px 0}
+.frow input{width:100%;text-align:right;font-weight:700}
+.bar2{display:flex;justify-content:space-between;align-items:center;margin:12px 0 2px}
+.tools{display:flex;gap:8px;margin:10px 0}
+.tools button{padding:8px 12px;font-size:13px}
+.days{display:flex;gap:6px;flex-wrap:wrap}
+.days button{padding:6px 10px;font-size:13px;background:var(--card2);border:1px solid var(--line);font-weight:600}
+.msg{margin-top:10px;font-size:14px}.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="top"><h1>♠ Poker<span>zin</span></h1><input type="month" id="month" aria-label="Mês"></div>
+
+<div class="tabs" id="tabs">
+  <button data-t="rank" class="on">🏆 Placar</button>
+  <button data-t="hist">📅 Dias</button>
+  <button data-t="stats">📊 Stats</button>
+  <button data-t="edit">✏️ Lançar</button>
+</div>
+
+<section class="tab on" id="t-rank"><div style="margin-top:12px" id="leader"></div><h2>Ranking do mês</h2><div id="rank"></div></section>
+
+<section class="tab" id="t-hist"><h2>Histórico por dia</h2><div class="scroll"><table id="hist"></table></div><div class="sub" style="margin-top:8px">A linha “soma” confere se bate com jogadores × 110.</div></section>
+
+<section class="tab" id="t-stats"><h2>Destaques do mês</h2><div class="grid2" id="hl"></div><h2>Por jogador</h2><div class="scroll"><table id="st"></table></div></section>
+
+<section class="tab" id="t-edit">
+  <div id="gate" class="panel"><div class="sub" style="margin-bottom:8px">Digite a senha para lançar ou corrigir um dia.</div>
+    <div style="display:flex;gap:8px"><input type="password" id="pw" placeholder="Senha" style="flex:1;min-width:0"><button id="unlock">Entrar</button></div>
+    <div id="gmsg" class="msg warn"></div></div>
+  <div id="editor" class="hidden">
+    <h2>1 · Data</h2><div class="panel"><input type="date" id="date" style="width:100%"><div class="days" id="done" style="margin-top:10px"></div></div>
+    <h2>2 · Quem jogou?</h2><div class="tools"><button class="ghost" id="all">Todos</button><button class="ghost" id="none">Limpar</button></div>
+    <div class="chips" id="chips"></div>
+    <h2>3 · Fichas finais</h2><div class="panel"><div id="vals"></div><div class="bar2"><span class="sub" id="sum"></span></div></div>
+    <div style="display:flex;gap:8px;margin-top:14px"><button id="save" style="flex:1">Salvar dia</button><button class="ghost" id="del">Apagar</button></div>
+    <div id="emsg" class="msg"></div>
+  </div>
+</section>
+
+<script>
+const PLAYERS=["Nathan","Brenda","Vitoria","Kananda","Pedro","Miguel","Vitin","Java"],START=110;
+const SB_URL="https://tinpcyzfqsaarromjcwb.supabase.co",SB_KEY="sb_publishable_2f8QH1GQgJhOMySGN-CDMA_fT-6fxMt";
+const api=async(path,opt={})=>{const r=await fetch(SB_URL+"/rest/v1/"+path,{...opt,headers:{apikey:SB_KEY,"Content-Type":"application/json",...(opt.headers||{})}});if(!r.ok)throw new Error(await r.text());return r.status===204?null:r.json()};
+let PW="",last="";
+let days={},db=null,unlocked=false,sel=new Set(),vals={};
+const $=id=>document.getElementById(id);
+const todayISO=()=>{const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)};
+const fd=iso=>iso.slice(8,10)+"/"+iso.slice(5,7);
+$("month").value=todayISO().slice(0,7);$("date").value=todayISO();
+const sc=(k,p)=>Number(days[k].scores?.[p]||0);
+const monthIds=()=>Object.keys(days).filter(k=>k.startsWith($("month").value)).sort();
+
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x===b));
+  document.querySelectorAll(".tab").forEach(s=>s.classList.toggle("on",s.id==="t-"+b.dataset.t));
+});
+
+function render(){
+  const ids=monthIds(),tot={},best={},wins={},pres={};
+  PLAYERS.forEach(p=>{tot[p]=0;best[p]=0;wins[p]=0;pres[p]=0});
+  ids.forEach(k=>{
+    const mx=Math.max(...PLAYERS.map(p=>sc(k,p)));
+    PLAYERS.forEach(p=>{const v=sc(k,p);tot[p]+=v;best[p]=Math.max(best[p],v);if((days[k].played||[]).includes(p))pres[p]++;if(v===mx&&v>0)wins[p]++});
+  });
+  const order=[...PLAYERS].sort((a,b)=>tot[b]-tot[a]),max=Math.max(1,...Object.values(tot));
+  $("leader").innerHTML=ids.length?'<div class="leader"><div class="crown">👑</div><div class="name">'+order[0]+'</div><div class="pts">'+tot[order[0]]+' fichas em '+ids.length+(ids.length>1?' jogos':' jogo')+'</div></div>':'<div class="leader"><div class="sub">Nenhum jogo neste mês ainda.</div></div>';
+  $("rank").innerHTML=order.map((p,i)=>'<div class="row p'+(i+1)+'"><div class="bar" style="width:'+tot[p]/max*100+'%"></div><div class="pos">'+(i+1)+'º</div><div><div>'+p+'</div><div class="sub">'+pres[p]+' presença'+(pres[p]===1?'':'s')+'</div></div><div class="tot">'+tot[p]+'</div></div>').join("");
+  let h='<thead><tr><th>Jogador</th>'+ids.map(k=>'<th>'+fd(k)+'</th>').join("")+'<th>Total</th></tr></thead><tbody>';
+  PLAYERS.forEach(p=>h+='<tr><td>'+p+'</td>'+ids.map(k=>{const v=sc(k,p);return'<td class="'+(v?'':'z')+'">'+v+'</td>'}).join("")+'<td><b>'+tot[p]+'</b></td></tr>');
+  h+='</tbody><tfoot><tr><td class="sub">soma</td>'+ids.map(k=>{const s=PLAYERS.reduce((a,p)=>a+sc(k,p),0),e=(days[k].played||[]).length*START;return'<td class="'+(s===e?'good':'warn')+'">'+s+'/'+e+'</td>'}).join("")+'<td></td></tr></tfoot>';
+  $("hist").innerHTML=ids.length?h:'<tbody><tr><td class="z">Sem dados</td></tr></tbody>';
+  const top=(o,f)=>{const m=Math.max(...PLAYERS.map(p=>f(p)));return m>0?PLAYERS.filter(p=>f(p)===m).join(", ")+" · "+m:"—"};
+  $("hl").innerHTML=[["🔥 Melhor noite",top(best,p=>best[p])],["🥇 Mais vitórias",top(wins,p=>wins[p])],["📌 Mais presente",top(pres,p=>pres[p])],["💰 Líder do mês",ids.length?order[0]+" · "+tot[order[0]]:"—"]].map(a=>'<div class="stat"><span class="sub">'+a[0]+'</span><b>'+a[1]+'</b></div>').join("");
+  $("st").innerHTML='<thead><tr><th>Jogador</th><th>Média</th><th>Melhor</th><th>Vitórias</th><th>Pres.</th></tr></thead><tbody>'+order.map(p=>'<tr><td>'+p+'</td><td>'+(pres[p]?Math.round(tot[p]/pres[p]):0)+'</td><td>'+best[p]+'</td><td>'+wins[p]+'</td><td>'+pres[p]+'</td></tr>').join("")+'</tbody>';
+}
+
+function load(){
+  const d=days[$("date").value];
+  sel=new Set(d?d.played||[]:PLAYERS.filter(p=>p!=="Vitin"));
+  vals={};if(d)PLAYERS.forEach(p=>{if(sel.has(p))vals[p]=d.scores?.[p]});
+  if(!d)sel=new Set();
+  form();
+  $("del").classList.toggle("hidden",!d);
+}
+function form(){
+  $("chips").innerHTML=PLAYERS.map(p=>'<div class="chip'+(sel.has(p)?' on':'')+'" data-p="'+p+'"><i>'+(sel.has(p)?'✓':'')+'</i>'+p+'</div>').join("");
+  document.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{const p=c.dataset.p;sel.has(p)?(sel.delete(p),delete vals[p]):sel.add(p);form()});
+  const list=PLAYERS.filter(p=>sel.has(p));
+  $("vals").innerHTML=list.length?list.map(p=>'<div class="frow"><span>'+p+'</span><input type="number" inputmode="numeric" min="0" data-p="'+p+'" value="'+(vals[p]??"")+'" placeholder="0"></div>').join(""):'<div class="sub">Selecione quem jogou acima.</div>';
+  document.querySelectorAll("#vals input").forEach(i=>i.oninput=()=>{vals[i.dataset.p]=i.value;sum()});
+  const ids=Object.keys(days).sort().reverse().slice(0,10);
+  $("done").innerHTML=ids.length?'<span class="sub" style="width:100%">Já lançados (toque para editar):</span>'+ids.map(k=>'<button data-d="'+k+'">'+fd(k)+'</button>').join(""):"";
+  document.querySelectorAll("#done button").forEach(b=>b.onclick=()=>{$("date").value=b.dataset.d;load()});
+  sum();
+}
+function sum(){
+  const n=sel.size,s=[...sel].reduce((a,p)=>a+Number(vals[p]||0),0);
+  $("sum").innerHTML=n+' jogador'+(n===1?'':'es')+' · soma <b class="'+(s===n*START?'good':'warn')+'">'+s+' / '+n*START+'</b>';
+}
+$("all").onclick=()=>{sel=new Set(PLAYERS);form()};
+$("none").onclick=()=>{sel=new Set();vals={};form()};
+$("date").onchange=load;$("month").onchange=render;
+$("unlock").onclick=async()=>{try{const ok=await api("rpc/check_pw",{method:"POST",body:JSON.stringify({pw:$("pw").value})});if(ok===true){PW=$("pw").value;unlocked=true;$("gate").classList.add("hidden");$("editor").classList.remove("hidden");load()}else $("gmsg").textContent="Senha incorreta."}catch(e){$("gmsg").textContent="Erro de conexão."}};
+$("pw").addEventListener("keydown",e=>{if(e.key==="Enter")$("unlock").click()});
+
+$("save").onclick=async()=>{
+  const date=$("date").value,m=$("emsg"),scores={},played=[...sel];
+  if(!date||!played.length||played.some(p=>vals[p]===""||vals[p]==null||Number(vals[p])<0)){m.className="msg warn";m.textContent="Escolha a data, marque quem jogou e preencha todas as fichas.";return}
+  PLAYERS.forEach(p=>scores[p]=sel.has(p)?Math.round(Number(vals[p])):0);
+  try{await api("rpc/save_day",{method:"POST",body:JSON.stringify({pw:PW,d:date,sc:scores,pl:played})});await refresh();m.className="msg good";m.textContent="Salvo! Quem não jogou ficou com 0."}
+  catch(e){m.className="msg warn";m.textContent="Não consegui salvar. Seu acesso pode ser só de leitura."}
+};
+$("del").onclick=async()=>{
+  const date=$("date").value;if(!days[date]||!confirm("Apagar o dia "+fd(date)+"?"))return;
+  try{await api("rpc/delete_day",{method:"POST",body:JSON.stringify({pw:PW,d:date})});await refresh();$("emsg").className="msg good";$("emsg").textContent="Dia apagado.";load()}
+  catch(e){$("emsg").className="msg warn";$("emsg").textContent="Não consegui apagar."}
+};
+
+async function refresh(){const rows=await api("days?select=*");const o={};rows.forEach(r=>o[r.date]={date:r.date,scores:r.scores,played:r.played});const j=JSON.stringify(o);if(j===last)return;last=j;days=o;render();if(unlocked)form()}
+render();refresh().catch(()=>{});setInterval(()=>refresh().catch(()=>{}),20000);
+</script>
+</body>
+</html>
